@@ -30,13 +30,14 @@ func init() {
 
 func serverDocs(ctx *context.Context) {
 	var obj interface{}
-	if splat := ctx.Input.Param(":splat"); splat == "" {
+	if splat := ctx.Input.Param(":splat"); splat == "" || splat == "docs" {
 		obj = GlobalDocApi["Root"]
 	} else {
 		if v, ok := GlobalDocApi[splat]; ok {
 			obj = v
 		}
 	}
+	
 	if obj != nil {
 		bt, err := json.Marshal(obj)
 		if err != nil {
