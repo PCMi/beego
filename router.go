@@ -902,6 +902,7 @@ type responseWriter struct {
 	writer  http.ResponseWriter
 	started bool
 	status  int
+	Status int
 }
 
 // Header returns the header map that will be sent by WriteHeader.
@@ -921,6 +922,7 @@ func (w *responseWriter) Write(p []byte) (int, error) {
 // and sets `started` to true.
 func (w *responseWriter) WriteHeader(code int) {
 	w.status = code
+	w.Status = code
 	w.started = true
 	w.writer.WriteHeader(code)
 }
