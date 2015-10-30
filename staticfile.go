@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+// added ctx.Input.Data["Status"] for access logging
+
 package beego
 
 import (
@@ -31,6 +33,7 @@ func serverStaticRouter(ctx *context.Context) {
 	}
 	requestPath := path.Clean(ctx.Input.Request.URL.Path)
 	i := 0
+
 	for prefix, staticDir := range StaticDir {
 		if len(prefix) == 0 {
 			continue
@@ -44,6 +47,7 @@ func serverStaticRouter(ctx *context.Context) {
 				i++
 				if i == len(StaticDir) {
 					http.NotFound(ctx.ResponseWriter, ctx.Request)
+					ctx.Input.Data["Status"] = 404
 					return
 				} else {
 					continue
@@ -61,15 +65,18 @@ func serverStaticRouter(ctx *context.Context) {
 					Warn("Can't find the file:", file, err)
 				}
 				http.NotFound(ctx.ResponseWriter, ctx.Request)
+				ctx.Input.Data["Status"] = 404
 				return
 			}
 			//if the request is dir and DirectoryIndex is false then
 			if finfo.IsDir() {
 				if !DirectoryIndex {
 					exception("403", ctx)
+					ctx.Input.Data["Status"] = 403
 					return
 				} else if ctx.Input.Request.URL.Path[len(ctx.Input.Request.URL.Path)-1] != '/' {
 					http.Redirect(ctx.ResponseWriter, ctx.Request, ctx.Input.Request.URL.Path+"/", 302)
+					ctx.Input.Data["Status"] = 302
 					return
 				}
 			} else if strings.HasSuffix(requestPath, "/index.html") {
