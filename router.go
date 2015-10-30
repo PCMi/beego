@@ -41,6 +41,7 @@ const (
 	BeforeExec
 	AfterExec
 	FinishRouter
+	Loging
 )
 
 const (
@@ -838,6 +839,8 @@ Admin:
 			}
 		}
 	}
+
+	do_filter(Loging)
 
 	if RunMode == "dev" || AccessLogs {
 		var devinfo string
